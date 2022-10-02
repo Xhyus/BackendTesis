@@ -3,8 +3,9 @@ const bcrypt = require('bcrypt');
 const token = require('../services/token');
 
 const createUser = async (req, res) => {
-    const { name, email } = req.body;
+    let { name } = req.body;
     let passwordHash = await bcrypt.hash(req.body.password, 10);
+    let email = req.body.email.toLowerCase();
     const user = new User({
         name,
         email,
@@ -14,7 +15,7 @@ const createUser = async (req, res) => {
         if (err) {
             return res.status(400).send({ message: "No se ha podido crear el usuario" })
         }
-        return res.status(200).send(user);
+        return res.status(201).send(user);
     });
 }
 
@@ -31,10 +32,10 @@ const getUser = (req, res) => {
     const { id } = req.params;
     User.findById(id, (err, user) => {
         if (err) {
-            return res.status(500).send({ message: "No se ha podido obtener el usuario" })
+            return res.status(400).send({ message: "No se ha podido obtener el usuario" })
         }
         if (!user) {
-            return res.status(400).send({ message: "No se ha encontrado el usuario" })
+            return res.status(404).send({ message: "No se ha encontrado el usuario" })
         }
         return res.status(200).send(user);
     });
@@ -45,10 +46,10 @@ const updateUser = (req, res) => {
     const { name, email } = req.body;
     User.findByIdAndUpdate(id, { name, email }, (err, user) => {
         if (err) {
-            return res.status(500).send({ message: "No se ha podido actualizar el usuario" })
+            return res.status(400).send({ message: "No se ha podido actualizar el usuario" })
         }
         if (!user) {
-            return res.status(400).send({ message: "No se ha encontrado el usuario" })
+            return res.status(404).send({ message: "No se ha encontrado el usuario" })
         }
         return res.status(200).send(user);
     });
@@ -58,10 +59,10 @@ const deleteUser = (req, res) => {
     const { id } = req.params;
     User.findByIdAndDelete(id, (err, user) => {
         if (err) {
-            return res.status(500).send({ message: "No se ha podido eliminar el usuario" })
+            return res.status(400).send({ message: "No se ha podido eliminar el usuario" })
         }
         if (!user) {
-            return res.status(400).send({ message: "No se ha encontrado el usuario" })
+            return res.status(404).send({ message: "No se ha encontrado el usuario" })
         }
         return res.status(200).send(user);
     });
@@ -72,26 +73,27 @@ const updatePassword = async (req, res) => {
     let passwordHash = await bcrypt.hash(req.body.password, 10);
     User.findByIdAndUpdate(id, { password: passwordHash }, (err, user) => {
         if (err) {
-            return res.status(500).send({ message: "No se ha podido actualizar la contraseña" })
+            return res.status(400).send({ message: "No se ha podido actualizar la contraseña" })
         }
         if (!user) {
-            return res.status(400).send({ message: "No se ha encontrado el usuario" })
+            return res.status(404).send({ message: "No se ha encontrado el usuario" })
         }
         return res.status(200).send(user);
     });
 }
 
 const login = (req, res) => {
-    User.findOne({ 'email': req.body.email }, async (err, user) => {
+    let email = req.body.email.toLowerCase();
+    User.findOne({ 'email': email }, (err, user) => {
         if (err) {
-            return res.status(500).send({ message: `Error al validar el usuario` })
+            return res.status(400).send({ message: `Error al validar el usuario` })
         }
         if (!user) {
-            return res.status(400).send({ message: `El usuario no existe` })
+            return res.status(404).send({ message: `El usuario no existe` })
         }
-        await bcrypt.compare(req.body.password, user.password, (err, result) => {
+        bcrypt.compare(req.body.password, user.password, (err, result) => {
             if (err) {
-                return res.status(500).send({ message: `Error al validar el usuario` })
+                return res.status(400).send({ message: `Error al validar el usuario` })
             }
             if (!result) {
                 return res.status(400).send({ message: `Contraseña incorrecta` })
