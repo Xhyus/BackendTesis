@@ -1,0 +1,224 @@
+{
+    "service": {
+        "name": {
+            "type": "String",
+            "required": true,
+            "maxLength": 100
+        },
+        "description": {
+            "type": "String",
+            "required": true,
+            "maxLength": 250
+        },
+        "price": {
+            "type": "Number",
+            "required": true
+        },
+        "itemList": {
+            "type": [
+                "Schema.ObjectId"
+            ],
+            "ref": "Item",
+            "required": true,
+            "maxLength": 8
+        },
+        "created": {
+            "type": "Date",
+            "default": "Date.now()"
+        },
+        "updated": {
+            "type": "Date",
+            "default": "Date.now()"
+        }
+    },
+    "item": {
+        "description": {
+            "type": "String",
+            "required": true,
+            "maxLength": 250
+        }
+    },
+    "company": [
+        {
+            "name": {
+                "type": "String",
+                "required": true,
+                "maxLength": 100
+            },
+            "socialReason": {
+                "type": "String",
+                "required": true,
+                "maxLength": 150
+            },
+            "email": {
+                "type": "String",
+                "required": true,
+                "maxLength": 100
+            },
+            "phone": {
+                "type": "String",
+                "required": true,
+                "maxLength": 20
+            },
+            "address": {
+                "type": "String",
+                "required": true,
+                "maxLength": 250
+            },
+            "contact": {
+                "type": "Schema.ObjectId",
+                "ref": "Contact",
+                "required": true
+            }
+        }
+    ],
+    "user": [
+        {
+            "name": {
+                "type": "String",
+                "required": true,
+                "maxLength": 100
+            },
+            "email": {
+                "type": "String",
+                "required": true,
+                "maxLength": 100
+            },
+            "password": {
+                "type": "String",
+                "required": true,
+                "minLength": 6,
+                "maxLength": 20
+            }
+        }
+    ],
+    "contact": {
+        "name": {
+            "type": "String",
+            "required": true,
+            "maxLength": 100
+        },
+        "email": {
+            "type": "String",
+            "required": true,
+            "maxLength": 100
+        },
+        "phone": {
+            "type": "String",
+            "required": true,
+            "maxLength": 20
+        },
+        "role": {
+            "type": "String",
+            "required": true,
+            "maxLength": 100
+        }
+    },
+    "note": [
+        {
+            "name": {
+                "type": "String",
+                "required": true,
+                "maxLength": 100
+            },
+            "tasks": {
+                "type": [
+                    "Schema.ObjectId"
+                ],
+                "ref": "Task",
+                "required": true
+            },
+            "created": {
+                "type": "Date",
+                "default": "Date.now()"
+            },
+            "createdBy": {
+                "type": "Schema.ObjectId",
+                "ref": "User",
+                "required": true
+            }
+        }
+    ],
+    "task": {
+        "description": {
+            "type": "String",
+            "required": true,
+            "maxLength": 250
+        },
+        "status": {
+            "type": "Boolean",
+            "default": false
+        }
+    },
+    "quotes": [
+        {
+            "name": {
+                "type": "String",
+                "required": true,
+                "maxLength": 100
+            },
+            "description": {
+                "type": "String",
+                "required": true,
+                "maxLength": 250
+            },
+            "price": {
+                "type": "Number",
+                "required": true
+            },
+            "services": {
+                "type": [
+                    "Schema.ObjectId"
+                ],
+                "ref": "QuoteService",
+                "required": true,
+                "maxLength": 8
+            },
+            "created": {
+                "type": "Date",
+                "default": "Date.now()"
+            },
+            "updated": {
+                "type": "Date",
+                "default": "Date.now()"
+            }
+        }
+    ],
+    "quoteService": {
+        "service": {
+            "type": "Schema.ObjectId",
+            "ref": "Service",
+            "required": true
+        },
+        "price": {
+            "type": "Number",
+            "required": true
+        }
+    },
+    "documents": {
+        "name": {
+            "type": "String",
+            "required": true,
+            "maxLength": 100
+        },
+        "description": {
+            "type": "String",
+            "required": true,
+            "maxLength": 250
+        },
+        "file": {
+            "type": "String",
+            "required": true,
+            "maxLength": 250
+        },
+        "uploadedDate": {
+            "type": "Date",
+            "default": "Date.now()"
+        },
+        "fileType": {
+            "type": "String",
+            "required": true,
+            "maxLength": 100
+        }
+    }
+}
