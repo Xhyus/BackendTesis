@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
+const token = require('../services/token');
 
 const createUser = async (req, res) => {
     const { name, email } = req.body;
@@ -80,7 +82,7 @@ const updatePassword = async (req, res) => {
 }
 
 const login = (req, res) => {
-    usuario.findOne({ 'email': req.body.email }, async (err, user) => {
+    User.findOne({ 'email': req.body.email }, async (err, user) => {
         if (err) {
             return res.status(500).send({ message: `Error al validar el usuario` })
         }
@@ -94,7 +96,8 @@ const login = (req, res) => {
             if (!result) {
                 return res.status(400).send({ message: `Contraseña incorrecta` })
             }
-            return res.status(200).send({ message: 'Contraseña correcta' }).cookie('token', token.createToken(user), { httpOnly: true });
+            res.cookie('token', token.createToken(user), { httpOnly: true });
+            return res.status(200).send({ message: 'Contraseña correcta' })
         })
     })
 }
