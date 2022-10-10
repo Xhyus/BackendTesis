@@ -99,11 +99,10 @@ const login = (req, res) => {
                 return res.status(400).send({ message: `Contraseña incorrecta` })
             }
             res.cookie('token', token.createToken(user), { httpOnly: true });
-            return res.status(200).send({ message: 'Contraseña correcta' })
+            return res.status(200).send({ message: 'Contraseña correcta', token: token.createToken(user) })
         })
     })
 }
-
 
 module.exports = {
     createUser,

@@ -18,8 +18,8 @@ const serviceSchema = new Schema({
     itemList: {
         type: [Schema.Types.ObjectId],
         ref: 'Item',
-        required: true,
-        maxLenght: 8
+        maxLenght: 8,
+        default: []
     },
     created: {
         type: Date,

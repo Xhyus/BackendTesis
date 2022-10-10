@@ -1,8 +1,9 @@
 const Service = require('../models/service');
+const Item = require('../models/item');
 
 const createService = (req, res) => {
-    const { name, description, price, itemList } = req.body;
-    const newService = new Service({ name, description, price, itemList });
+    const { name, description, price } = req.body;
+    const newService = new Service({ name, description, price });
     newService.save((err, serviceStored) => {
         if (err) {
             return res.status(400).send({ message: 'Error al crear el servicio' });
@@ -38,6 +39,7 @@ const getService = (req, res) => {
 
 const updateService = (req, res) => {
     const { id } = req.params;
+    req.body.updatedAt = Date.now();
     Service.findByIdAndUpdate(id, req.body, (err, serviceUpdated) => {
         if (err) {
             return res.status(400).send({ message: 'Error al actualizar el servicio' });

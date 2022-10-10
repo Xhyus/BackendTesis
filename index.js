@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
-const authRoutes = require('./routes/authRoutes');
+const itemRoutes = require('./routes/itemRoutes');
 
 const app = express()
 app.use(cookieParser())
@@ -15,7 +15,7 @@ app.use(express.json())
 app.options('*', cors())
 app.use('/api', userRoutes);
 app.use('/api', serviceRoutes);
-app.use('/api', authRoutes);
+app.use('/api', itemRoutes);
 
 const options = {
     useNewUrlParser: true,

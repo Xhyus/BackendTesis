@@ -1,14 +1,25 @@
+const { now } = require('mongoose');
 const Item = require('../models/item');
+const Service = require('../models/service');
 
 const createItem = (req, res) => {
     const { description } = req.body;
+    const { id } = req.params
     const newItem = new Item({ description });
     newItem.save((err, itemStored) => {
         if (err) {
             return res.status(400).send({ message: 'Error al crear el item' });
         }
-        return res.status(201).send(itemStored);
-    });
+        Service.findByIdAndUpdate({ _id: id }, { $push: { itemList: itemStored._id, updated: Date.now() } }, (err, serviceUpdated) => {
+            if (err) {
+                return res.status(400).send({ message: 'Error al actualizar el servicio' });
+            }
+            if (!serviceUpdated) {
+                return res.status(404).send({ message: 'El servicio no existe' });
+            }
+            return res.status(201).send(serviceUpdated);
+        });
+    })
 }
 
 const getItems = (req, res) => {
