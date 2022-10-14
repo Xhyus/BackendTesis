@@ -6,7 +6,6 @@ const createItem = (req, res) => {
     const { id } = req.params
     let items = []
     itemList.forEach(item => {
-        console.log(item)
         items.push(new Item({
             description: item
         }))
@@ -36,7 +35,7 @@ const getItems = (req, res) => {
             return res.status(400).send({ message: 'Error al obtener los items' });
         }
         if (items.length === 0) {
-            return res.status(200).send({ message: 'No hay items' });
+            return res.status(404).send({ message: 'No hay items' });
         }
         return res.status(200).send(items);
     });

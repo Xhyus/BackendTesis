@@ -4,15 +4,18 @@ require('dotenv').config()
 
 const auth = (req, res, next) => {
     const cookies = req.cookies;
-    if (!cookies.token) {
-        return res.status(403).send({ message: "No tienes autorización" })
+    if (!cookies.token || cookies.token === 'null') {
+        return res.status(401).send({ message: "No tienes autorización" })
     }
-    const payload = jwt.decode(cookies.token, process.env.SECRET_TOKEN);
-    if (payload.exp <= moment().unix()) {
-        return res.status(401).send({ message: "El token ha expirado" })
+    try {
+        const payload = jwt.decode(cookies.token, process.env.SECRET_TOKEN)
+        if (payload.exp <= moment().unix()) {
+            return res.status(401).send({ message: "El token ha expirado" })
+        }
+    } catch (err) {
+        return res.status(401).send({ message: "Token inválido" })
     }
-    req.user = payload.sub;
-    next();
+    next()
 }
 
 module.exports = { auth };
