@@ -7,4 +7,4 @@ const itemSchema = new Schema({
         maxLenght: 250
     },
 });
-module.exports = mongoose.model('Item', itemSchema);
+module.exports = mongoose.model('item', itemSchema);

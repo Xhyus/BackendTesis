@@ -17,7 +17,7 @@ const createItem = (req, res) => {
         let itemsID = itemsCreated.map(item => {
             return item._id.toString()
         })
-        Service.findByIdAndUpdate(id, { $push: { itemList: itemsID } }, (err, serviceUpdated) => {
+        Service.findByIdAndUpdate(id, { $push: { item: itemsID } }, (err, serviceUpdated) => {
             if (err) {
                 return res.status(500).send({ message: 'Error al actualizar el servicio' });
             }

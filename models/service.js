@@ -15,9 +15,9 @@ const serviceSchema = new Schema({
         type: Number,
         required: true,
     },
-    itemList: {
-        type: [Schema.Types.ObjectId],
-        ref: 'Item',
+    item: {
+        type: [Schema.ObjectId],
+        ref: 'item',
         maxLenght: 8,
         default: []
     },
@@ -31,4 +31,4 @@ const serviceSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Service', serviceSchema);
+module.exports = mongoose.model('service', serviceSchema);

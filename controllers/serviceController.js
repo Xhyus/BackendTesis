@@ -13,12 +13,13 @@ const createService = (req, res) => {
 }
 
 const getServices = (req, res) => {
-    Service.find({}, (err, services) => {
+    // populate with items
+    Service.find().populate('item').exec((err, services) => {
         if (err) {
             return res.status(400).send({ message: 'Error al obtener los servicios' });
         }
-        if (services.length === 0) {
-            return res.status(200).send({ message: 'No hay servicios' });
+        if (!services) {
+            return res.status(404).send({ message: 'No hay servicios' });
         }
         return res.status(200).send(services);
     });
@@ -64,11 +65,10 @@ const deleteService = (req, res) => {
     });
 }
 
-
 module.exports = {
     createService,
     getServices,
     getService,
     updateService,
-    deleteService
+    deleteService,
 };

@@ -17,17 +17,12 @@ app.use('/api', userRoutes);
 app.use('/api', serviceRoutes);
 app.use('/api', itemRoutes);
 
-const options = {
-    useNewUrlParser: true,
-    autoIndex: true,
-    keepAlive: true,
-    connectTimeoutMS: 10000,
-    socketTimeoutMS: 45000,
-    family: 4,
-    useUnifiedTopology: true
-}
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
 
-mongoose.connect(process.env.DB, options, (error) => {
+mongoose.connect(process.env.DB, (error) => {
     if (error) {
         return console.log(error)
     }
