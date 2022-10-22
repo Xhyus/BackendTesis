@@ -27,11 +27,33 @@ const createContact = async (req, res) => {
     })
 }
 
+const getContacts = async (req, res) => {
+    Contact.find((err, contacts) => {
+        if (err) {
+            return res.status(400).send({ message: 'Error al obtener los contactos' });
+        }
+        return res.status(200).send(contacts);
+    })
+}
+
+const getSpecificContact = async (req, res) => {
+    const { id } = req.params;
+    Contact.findById(id, (err, contact) => {
+        if (err) {
+            return res.status(400).send({ message: 'Error al obtener el contacto' });
+        }
+        if (!contact) {
+            return res.status(404).send({ message: 'Contacto no encontrado' });
+        }
+        return res.status(200).send(contact);
+    })
+}
+
 
 module.exports = {
     createContact,
-    // getContacts,
-    // getSpecificContact,
+    getContacts,
+    getSpecificContact,
     // updateContact,
     // deleteContact
 }
