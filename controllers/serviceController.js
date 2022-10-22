@@ -13,7 +13,6 @@ const createService = (req, res) => {
 }
 
 const getServices = (req, res) => {
-    // populate with items
     Service.find().populate('item').exec((err, services) => {
         if (err) {
             return res.status(400).send({ message: 'Error al obtener los servicios' });
@@ -27,7 +26,7 @@ const getServices = (req, res) => {
 
 const getService = (req, res) => {
     const { id } = req.params;
-    Service.findById(id, (err, service) => {
+    Service.findById(id).populate('item').exec((err, service) => {
         if (err) {
             return res.status(400).send({ message: 'Error al obtener el servicio' });
         }

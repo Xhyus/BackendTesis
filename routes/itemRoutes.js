@@ -8,5 +8,7 @@ api.get('/items', itemController.getItems);
 api.get('/item/search/:id', auth.auth, itemController.getItem);
 api.put('/item/update/:id', auth.auth, itemController.updateItem);
 api.delete('/item/delete/:id', auth.auth, itemController.deleteItem);
+api.put('/items/update/:id', auth.auth, itemController.updateManyItems);
+api.delete('/items/delete', auth.auth, itemController.deleteManyItems);
 
 module.exports = api;
