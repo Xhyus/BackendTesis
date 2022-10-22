@@ -67,6 +67,46 @@ const updateItem = (req, res) => {
     });
 }
 
+const updateManyItems = (req, res) => {
+    const { itemList } = req.body;
+    let items = []
+    itemList.forEach(item => {
+        items.push(new Item({
+            description: item
+        }))
+    })
+    Item.insertMany(items, (err, itemsCreated) => {
+        if (err) {
+            return res.status(500).send({ message: 'Error al crear el item' });
+        }
+        let itemsID = itemsCreated.map(item => {
+            return item._id.toString()
+        })
+        Service.findByIdAndUpdate(req.params.id, { $set: { item: itemsID } }, (err, serviceUpdated) => {
+            if (err) {
+                return res.status(500).send({ message: 'Error al actualizar el servicio' });
+            }
+            if (!serviceUpdated) {
+                return res.status(404).send({ message: 'El servicio no existe' });
+            }
+            return res.status(200).send(serviceUpdated);
+        });
+    })
+}
+
+const deleteManyItems = (req, res) => {
+    const { itemList } = req.body;
+    Item.deleteMany({ _id: { $in: itemList } }, (err, itemsDeleted) => {
+        if (err) {
+            return res.status(400).send({ message: 'Error al eliminar los items' });
+        }
+        if (!itemsDeleted) {
+            return res.status(404).send({ message: 'Los items no existen' });
+        }
+        return res.status(200).send({ message: 'Items eliminados' });
+    });
+}
+
 const deleteItem = (req, res) => {
     const { id } = req.params;
     Item.findByIdAndDelete(id, (err, itemDeleted) => {
@@ -85,5 +125,7 @@ module.exports = {
     getItems,
     getItem,
     updateItem,
-    deleteItem
+    deleteItem,
+    updateManyItems,
+    deleteManyItems
 }
