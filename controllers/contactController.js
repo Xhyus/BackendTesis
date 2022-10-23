@@ -49,11 +49,37 @@ const getSpecificContact = async (req, res) => {
     })
 }
 
+const updateContact = async (req, res) => {
+    const { id } = req.params;
+    const { name, email, phone, role, rut } = req.body;
+    Contact.findByIdAndUpdate(id, { name, email, phone, role, rut }, { new: true }, (err, contact) => {
+        if (err) {
+            return res.status(400).send({ message: 'Error al actualizar el contacto' });
+        }
+        if (!contact) {
+            return res.status(404).send({ message: 'Contacto no encontrado' });
+        }
+        return res.status(200).send(contact);
+    })
+}
+
+const deleteContact = async (req, res) => {
+    const { id } = req.params;
+    Contact.findByIdAndDelete(id, (err, contact) => {
+        if (err) {
+            return res.status(400).send({ message: 'Error al eliminar el contacto' });
+        }
+        if (!contact) {
+            return res.status(404).send({ message: 'Contacto no encontrado' });
+        }
+        return res.status(200).send({ message: 'Contacto eliminado' });
+    })
+}
 
 module.exports = {
     createContact,
     getContacts,
     getSpecificContact,
-    // updateContact,
-    // deleteContact
+    updateContact,
+    deleteContact
 }
