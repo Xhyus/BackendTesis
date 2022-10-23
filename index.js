@@ -7,6 +7,7 @@ require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const itemRoutes = require('./routes/itemRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 const app = express()
 app.use(cookieParser())
@@ -16,6 +17,7 @@ app.options('*', cors())
 app.use('/api', userRoutes);
 app.use('/api', serviceRoutes);
 app.use('/api', itemRoutes);
+app.use('/api', contactRoutes);
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
