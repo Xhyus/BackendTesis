@@ -104,6 +104,10 @@ const login = (req, res) => {
     })
 }
 
+const checkToken = (req, res) => {
+    return res.status(200).send({ message: 'Token correcto' })
+}
+
 module.exports = {
     createUser,
     getUsers,
@@ -111,5 +115,6 @@ module.exports = {
     updateUser,
     deleteUser,
     updatePassword,
-    login
+    login,
+    checkToken
 }

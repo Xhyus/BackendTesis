@@ -10,5 +10,6 @@ api.put('/update-user/:id', auth.auth, userController.updateUser);
 api.delete('/delete-user/:id', auth.auth, userController.deleteUser);
 api.put('/update-password/:id', auth.auth, userController.updatePassword);
 api.post('/login', userController.login);
+api.get('/checkToken', auth.auth, userController.checkToken);
 
 module.exports = api;
