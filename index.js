@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const companyRoutes = require('./routes/companyRoutes');
 
 const app = express()
 app.use(cookieParser())
@@ -18,6 +19,7 @@ app.use('/api', userRoutes);
 app.use('/api', serviceRoutes);
 app.use('/api', itemRoutes);
 app.use('/api', contactRoutes);
+app.use('/api', companyRoutes);
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
