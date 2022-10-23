@@ -1,14 +1,15 @@
 const Company = require('../models/company');
 
 const createCompany = async (req, res) => {
-    const { name, rut, address, phone, email, contact } = req.body;
+    const { name, rut, address, phone, email, contact, socialReason } = req.body;
     const newCompany = new Company({
         name,
         rut,
         address,
         phone,
         email,
-        contact
+        contact,
+        socialReason
     });
     newCompany.save((err, company) => {
         if (err) {
@@ -42,8 +43,8 @@ const getSpecificCompany = async (req, res) => {
 
 const updateCompany = async (req, res) => {
     const { id } = req.params;
-    const { name, rut, address, phone, email, contact } = req.body;
-    Company.findByIdAndUpdate(id, { name, rut, address, phone, email, contact }, { new: true }, (err, company) => {
+    const { name, rut, address, phone, email, contact, socialReason } = req.body;
+    Company.findByIdAndUpdate(id, { name, rut, address, phone, email, contact, socialReason }, { new: true }, (err, company) => {
         if (err) {
             return res.status(400).send({ message: 'Error al actualizar la empresa' });
         }

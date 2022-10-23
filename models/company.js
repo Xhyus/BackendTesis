@@ -6,6 +6,11 @@ const companySchema = new Schema({
         required: true,
         maxlength: 100
     },
+    socialReason: {
+        type: String,
+        required: true,
+        maxlength: 100
+    },
     address: {
         type: String,
         required: true,
