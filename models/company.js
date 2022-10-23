@@ -28,7 +28,7 @@ const companySchema = new Schema({
         maxlength: 100
     },
     contact: {
-        type: Schema.objectId,
+        type: Schema.ObjectId,
         ref: 'contact',
         required: true
     }
