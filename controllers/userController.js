@@ -99,9 +99,14 @@ const login = (req, res) => {
                 return res.status(400).send({ message: `Contraseña incorrecta` })
             }
             res.cookie('token', token.createToken(user), { httpOnly: true });
-            return res.status(200).send({ message: 'Contraseña correcta', token: token.createToken(user) })
+            return res.status(200).send({ message: 'Contraseña correcta', token: token.createToken(user), user: user.name })
         })
     })
+}
+
+const logout = (req, res) => {
+    res.clearCookie('token');
+    return res.status(200).send({ message: 'Sesión cerrada' })
 }
 
 const checkToken = (req, res) => {
@@ -116,5 +121,6 @@ module.exports = {
     deleteUser,
     updatePassword,
     login,
-    checkToken
+    checkToken,
+    logout
 }
