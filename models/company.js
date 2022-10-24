@@ -8,12 +8,10 @@ const companySchema = new Schema({
     },
     socialReason: {
         type: String,
-        required: true,
         maxlength: 100
     },
     address: {
         type: String,
-        required: true,
         maxlength: 250
     },
     rut: {
@@ -35,9 +33,7 @@ const companySchema = new Schema({
     contact: {
         type: Schema.ObjectId,
         ref: 'contact',
-        required: true
     }
-
 })
 
 module.exports = mongoose.model('company', companySchema);
