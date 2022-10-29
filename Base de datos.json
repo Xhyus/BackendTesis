@@ -77,26 +77,6 @@
             }
         }
     ],
-    "user": [
-        {
-            "name": {
-                "type": "String",
-                "required": true,
-                "maxLength": 100
-            },
-            "email": {
-                "type": "String",
-                "required": true,
-                "maxLength": 100
-            },
-            "password": {
-                "type": "String",
-                "required": true,
-                "minLength": 6,
-                "maxLength": 20
-            }
-        }
-    ],
     "contact": {
         "name": {
             "type": "String",
@@ -124,6 +104,26 @@
             "maxLength": 12
         }
     },
+    "user": [
+        {
+            "name": {
+                "type": "String",
+                "required": true,
+                "maxLength": 100
+            },
+            "email": {
+                "type": "String",
+                "required": true,
+                "maxLength": 100
+            },
+            "password": {
+                "type": "String",
+                "required": true,
+                "minLength": 6,
+                "maxLength": 20
+            }
+        }
+    ],
     "note": [
         {
             "name": {
