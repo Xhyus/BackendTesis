@@ -35,7 +35,7 @@ const getSignedPage = (req, res) => {
         if (err) {
             return res.status(400).send({ message: "Error al obtener la página protegida" });
         }
-        if (signed.type === 'signed' || signed.left > 3) {
+        if (signed.type === 'signed' || signed.left === 3) {
             return res.status(400).json({ error: 'Favor contactarse con la empresa para generar un nuevo' });
         }
         if (!signed) {
