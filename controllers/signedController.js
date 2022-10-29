@@ -20,3 +20,11 @@ const createSigned = (req, res) => {
     })
 }
 
+const getSigned = (req, res) => {
+    Signed.find({}, (err, signed) => {
+        if (err) {
+            return res.status(400).send({ message: "Error al obtener las páginas protegidas" });
+        }
+        return res.status(200).send(signed);
+    })
+}
