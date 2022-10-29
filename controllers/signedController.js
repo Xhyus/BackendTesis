@@ -45,3 +45,8 @@ const getSignedPage = (req, res) => {
     })
 }
 
+module.exports = {
+    createSigned,
+    getSigned,
+    getSignedPage
+}
