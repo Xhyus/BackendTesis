@@ -2,11 +2,6 @@ const Signed = require('../models/signed');
 
 const createSigned = (req, res) => {
     let { type, use, left } = req.body;
-    if (use === 'recovery') {
-        left = 3;
-    } else {
-        left = 2;
-    }
     const newSigned = new Signed({
         type,
         use,
@@ -35,18 +30,25 @@ const getSignedPage = (req, res) => {
         if (err) {
             return res.status(400).send({ message: "Error al obtener la página protegida" });
         }
-        if (signed.type === 'signed' || signed.left === 3) {
-            return res.status(400).json({ error: 'Favor contactarse con la empresa para generar un nuevo' });
-        }
         if (!signed) {
             return res.status(404).send({ message: "Página protegida no encontrada" });
         }
-        return res.status(200).send(signed);
+        if (signed.type === 'signed' || signed.left === 3) {
+            return res.status(400).json({ error: 'Favor contactarse con la empresa para generar un nuevo' });
+        }
+        Signed.findByIdAndUpdate(id, { left: signed.left + 1 }, (err, updated) => {
+            if (err) {
+                return res.status(400).send({ message: "Error al actualizar la página protegida" });
+            }
+            return res.status(200).send(updated);
+        })
     })
 }
+
 
 module.exports = {
     createSigned,
     getSigned,
-    getSignedPage
+    getSignedPage,
+    // signedPage
 }
