@@ -45,10 +45,25 @@ const getSignedPage = (req, res) => {
     })
 }
 
+const signedPage = (req, res) => {
+    const { id } = req.params;
+    Signed.findByIdAndUpdate(id, { type: "signed" }, (err, signed) => {
+        if (err) {
+            return res.status(400).send({ message: "Error al actualizar la página protegida" });
+        }
+        if (!signed) {
+            return res.status(404).send({ message: "Página protegida no encontrada" });
+        }
+        if (signed.type === 'signed' || signed.left === 3) {
+            return res.status(400).json({ error: 'Favor contactarse con la empresa para generar un nuevo link' });
+        }
+        return res.status(200).send(signed);
+    })
+}
 
 module.exports = {
     createSigned,
     getSigned,
     getSignedPage,
-    // signedPage
+    signedPage
 }
