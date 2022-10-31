@@ -20,12 +20,16 @@ const createCompany = (req, res) => {
             socialReason
         });
     }
-    newCompany.save((err, company) => {
-        if (err) {
-            return res.status(400).send({ message: 'Error al crear la empresa' });
-        }
-        return res.status(201).send(company);
-    });
+    try {
+        newCompany.save((err, company) => {
+            if (err) {
+                return res.status(400).send({ message: 'Error al crear la empresa' });
+            }
+            return res.status(201).send(company);
+        });
+    } catch (error) {
+        return res.status(400).send({ message: 'Por favor revise los datos ingresados' });
+    }
 }
 
 const getCompanies = async (req, res) => {
