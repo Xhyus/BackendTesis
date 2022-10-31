@@ -1,31 +1,25 @@
 const Company = require('../models/company');
 
-const createCompany = async (req, res) => {
-    const { name, rut, address, phone, email, socialReason } = req.body;
-    const newCompany = new Company({
-        name,
-        rut,
-        address,
-        phone,
-        email,
-        socialReason
-    });
-    newCompany.save((err, company) => {
-        if (err) {
-            return res.status(400).send({ message: 'Error al crear la empresa' });
-        }
-        return res.status(201).send(company);
-    });
-}
-
-const createUnConstitutedCompany = async (req, res) => {
-    const { name, rut, phone, email } = req.body;
-    const newCompany = new Company({
-        name,
-        rut,
-        phone,
-        email
-    });
+const createCompany = (req, res) => {
+    const { name, rut, address, phone, email, socialReason, state } = req.body;
+    let newCompany
+    if (state === 'unconstituted') {
+        newCompany = new Company({
+            name,
+            rut,
+            phone,
+            email
+        });
+    } else {
+        newCompany = new Company({
+            name,
+            rut,
+            address,
+            phone,
+            email,
+            socialReason
+        });
+    }
     newCompany.save((err, company) => {
         if (err) {
             return res.status(400).send({ message: 'Error al crear la empresa' });
@@ -88,6 +82,5 @@ module.exports = {
     getCompanies,
     getSpecificCompany,
     updateCompany,
-    deleteCompany,
-    createUnConstitutedCompany
+    deleteCompany
 }
