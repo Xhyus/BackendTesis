@@ -24,7 +24,6 @@ const contactSchema = new Schema({
     rut: {
         type: String,
         required: true,
-        unique: true,
         maxlength: 12
     }
 })

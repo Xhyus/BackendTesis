@@ -4,6 +4,7 @@ const Company = require('../models/company');
 const createContact = async (req, res) => {
     const { name, email, phone, role, rut } = req.body;
     const { id } = req.params;
+    console.log(req.body);
     const newContact = new Contact({
         name,
         email,
@@ -22,7 +23,7 @@ const createContact = async (req, res) => {
             if (!company) {
                 return res.status(404).send({ message: 'Empresa no encontrada' });
             }
-            return res.status(200).send(company);
+            return res.status(201).send(company);
         })
     })
 }

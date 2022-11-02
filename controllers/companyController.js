@@ -1,39 +1,54 @@
 const Company = require('../models/company');
+const Contact = require('../models/contact');
 
 const createCompany = (req, res) => {
-    const { name, rut, address, phone, email, socialReason, state } = req.body;
+    const { name, rut, address, phone, email, socialReason, state, contactName, contactRut, contactPhone, contactEmail, contactRole } = req.body;
     let newCompany
-    if (state === 'unconstituted') {
-        newCompany = new Company({
-            name,
-            rut,
-            phone,
-            email
-        });
-    } else {
-        newCompany = new Company({
-            name,
-            rut,
-            address,
-            phone,
-            email,
-            socialReason
-        });
-    }
+    const newContact = new Contact({
+        name: contactName,
+        rut: contactRut,
+        phone: contactPhone,
+        email: contactEmail,
+        role: contactRole,
+    });
     try {
-        newCompany.save((err, company) => {
+        newContact.save((err, contact) => {
             if (err) {
-                return res.status(400).send({ message: 'Error al crear la empresa' });
+                return res.status(400).send({ message: 'Error al crear el contacto' });
             }
-            return res.status(201).send(company);
-        });
+            if (state === 'unconstituted') {
+                newCompany = new Company({
+                    name,
+                    rut,
+                    phone,
+                    email,
+                    contact: contact._id,
+                });
+            } else {
+                newCompany = new Company({
+                    name,
+                    rut,
+                    address,
+                    phone,
+                    email,
+                    socialReason,
+                    contact: contact._id
+                });
+            }
+            newCompany.save((err, company) => {
+                if (err) {
+                    return res.status(400).send({ message: 'Error al crear la empresa' });
+                }
+                return res.status(200).send(company);
+            })
+        })
     } catch (error) {
         return res.status(400).send({ message: 'Por favor revise los datos ingresados' });
     }
 }
 
 const getCompanies = async (req, res) => {
-    Company.find((err, companies) => {
+    Company.find({}).populate('contact').exec((err, companies) => {
         if (err) {
             return res.status(400).send({ message: 'Error al obtener las empresas' });
         }
@@ -43,7 +58,7 @@ const getCompanies = async (req, res) => {
 
 const getSpecificCompany = async (req, res) => {
     const { id } = req.params;
-    Company.findById(id, (err, company) => {
+    Company.findById(id).populate('contact').exec((err, company) => {
         if (err) {
             return res.status(400).send({ message: 'Error al obtener la empresa' });
         }
