@@ -3,6 +3,7 @@ const Contact = require('../models/contact');
 
 const createCompany = (req, res) => {
     const { name, rut, address, phone, email, socialReason, state, contactName, contactRut, contactPhone, contactEmail, contactRole } = req.body;
+    console.log(req.body);
     let newCompany
     const newContact = new Contact({
         name: contactName,
@@ -14,6 +15,7 @@ const createCompany = (req, res) => {
     try {
         newContact.save((err, contact) => {
             if (err) {
+                console.log(err)
                 return res.status(400).send({ message: 'Error al crear el contacto' });
             }
             if (state === 'unconstituted') {
@@ -37,9 +39,12 @@ const createCompany = (req, res) => {
             }
             newCompany.save((err, company) => {
                 if (err) {
+                    if (err.code === 11000) {
+                        return res.status(406).send({ message: 'La empresa ya existe' });
+                    }
                     return res.status(400).send({ message: 'Error al crear la empresa' });
                 }
-                return res.status(200).send(company);
+                return res.status(201).send(company);
             })
         })
     } catch (error) {
