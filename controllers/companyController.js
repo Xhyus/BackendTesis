@@ -4,6 +4,13 @@ const Contact = require('../models/contact');
 const createCompany = (req, res) => {
     const { name, rut, address, phone, email, socialReason, state, contactName, contactRut, contactPhone, contactEmail, contactRole } = req.body;
     let newCompany
+    // check if contactPhone and phone contains at the beginning +56
+    if (contactPhone.charAt(0) !== '+' && contactPhone.charAt(1) !== '5' && contactPhone.charAt(2) !== '6') {
+        contactPhone = '+56' + contactPhone
+    }
+    if (phone.charAt(0) !== '+' && phone.charAt(1) !== '5' && phone.charAt(2) !== '6') {
+        phone = '+56' + phone
+    }
     const newContact = new Contact({
         name: contactName,
         rut: contactRut,
