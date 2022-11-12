@@ -3,7 +3,7 @@ const Company = require('../models/company')
 
 const checkRUT = (req, res, next) => {
     if (rutlib.validateRut(req.body.rut) && rutlib.validateRut(req.body.contactRut)) {
-        Company.findOne({ rut }, (err, company) => {
+        Company.findOne({ rut: req.body.rut }, (err, company) => {
             if (err) {
                 return res.status(500).send({ message: 'Error en la petición' })
             }
