@@ -8,7 +8,7 @@ api.get('/quotes', auth.auth, quotesController.getQuotes);
 api.get('/quotes/active', auth.auth, quotesController.getActiveQuotes);
 api.get('/quote/:id', auth.auth, quotesController.getQuote);
 api.put('/quote/:id', auth.auth, quotesController.updateQuote);
-// api.delete('/quote/:id', auth.auth, quotesController.deleteQuote);
+api.put('/quote/:id', auth.auth, quotesController.deleteQuote);
 api.get('/quotes/search/company/:id', auth.auth, quotesController.getQuotesByCompany);
 
 module.exports = api;

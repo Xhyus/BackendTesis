@@ -111,7 +111,16 @@ const updateQuote = (req, res) => {
 }
 
 const deleteQuote = (req, res) => {
-
+    const { id } = req.params;
+    Quotes.findByIdAndUpdate(id, { active: false }, { new: true }, (err, quoteUpdated) => {
+        if (err) {
+            return res.status(500).send({ message: 'Error al eliminar cotización' });
+        }
+        if (!quoteUpdated) {
+            return res.status(404).send({ message: 'No se ha podido eliminar la cotización' });
+        }
+        return res.status(200).send({ quote: quoteUpdated });
+    })
 }
 
 const getQuotesByCompany = (req, res) => {
@@ -148,4 +157,5 @@ module.exports = {
     getActiveQuotes,
     getQuote,
     updateQuote,
+    deleteQuote
 }

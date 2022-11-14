@@ -35,6 +35,11 @@ const QuoteSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'company'
     },
+    status: {
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'active'
+    }
 })
 
 module.exports = mongoose.model('quote', QuoteSchema);
