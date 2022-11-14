@@ -1,7 +1,6 @@
 const Quotes = require('../models/quotes');
 const Company = require('../models/company');
 const Services = require('../models/service');
-const company = require('../models/company');
 
 const createQuote = (req, res) => {
     const { name, description, services, company } = req.body;
@@ -57,7 +56,6 @@ const getQuotes = (req, res) => {
     })
 }
 const getActiveQuotes = (req, res) => {
-    // get only the quotes that have less than 31 days
     Quotes.find({ created: { $gte: new Date(new Date().getTime() - 31 * 24 * 60 * 60 * 1000) }, active: true }).populate('company').exec((err, quotes) => {
         if (err) {
             return res.status(500).send({ message: 'Error al buscar cotizaciones' });
