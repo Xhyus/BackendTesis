@@ -14,7 +14,7 @@ const QuoteSchema = new Schema({
         required: true
     },
     quoteServices: [{
-        services: {
+        service: {
             type: [Schema.Types.ObjectId],
             ref: 'services'
         },
