@@ -45,7 +45,15 @@ const createQuote = (req, res) => {
 }
 
 const getQuotes = (req, res) => {
-
+    Quotes.find().populate('company').exec((err, quotes) => {
+        if (err) {
+            return res.status(500).send({ message: 'Error al buscar cotizaciones' });
+        }
+        if (!quotes) {
+            return res.status(404).send({ message: 'No hay cotizaciones' });
+        }
+        return res.status(200).send(quotes);
+    })
 }
 
 const getQuote = (req, res) => {
@@ -69,7 +77,6 @@ const getQuotesByCompany = (req, res) => {
         if (!company) {
             return res.status(404).send({ message: 'No se ha encontrado la empresa' });
         }
-        // filter by date, if it has more than 31 days old add to const oldQuotes otherwise add to const validQuotes
         const oldQuotes = company.quotes.filter(quote => {
             let today = new Date();
             let quoteDate = new Date(quote.created);
@@ -90,5 +97,6 @@ const getQuotesByCompany = (req, res) => {
 
 module.exports = {
     createQuote,
-    getQuotesByCompany
+    getQuotesByCompany,
+    getQuotes,
 }
