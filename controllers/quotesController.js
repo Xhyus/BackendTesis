@@ -70,7 +70,16 @@ const getActiveQuotes = (req, res) => {
 }
 
 const getQuote = (req, res) => {
-
+    const { id } = req.params;
+    Quotes.findById(id).populate('company').exec((err, quote) => {
+        if (err) {
+            return res.status(500).send({ message: 'Error al buscar cotización' });
+        }
+        if (!quote) {
+            return res.status(404).send({ message: 'No existe la cotización' });
+        }
+        return res.status(200).send(quote);
+    })
 }
 
 const updateQuote = (req, res) => {
@@ -113,4 +122,5 @@ module.exports = {
     getQuotesByCompany,
     getQuotes,
     getActiveQuotes,
+    getQuote,
 }
