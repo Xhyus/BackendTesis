@@ -36,9 +36,8 @@ const QuoteSchema = new Schema({
         ref: 'company'
     },
     status: {
-        type: String,
-        enum: ['active', 'inactive'],
-        default: 'active'
+        type: Boolean,
+        default: true
     }
 })
 

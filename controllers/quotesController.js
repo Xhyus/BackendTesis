@@ -58,7 +58,7 @@ const getQuotes = (req, res) => {
 }
 const getActiveQuotes = (req, res) => {
     // get only the quotes that have less than 31 days
-    Quotes.find({ created: { $gte: new Date(new Date().getTime() - 31 * 24 * 60 * 60 * 1000) } }).populate('company').exec((err, quotes) => {
+    Quotes.find({ created: { $gte: new Date(new Date().getTime() - 31 * 24 * 60 * 60 * 1000) }, active: true }).populate('company').exec((err, quotes) => {
         if (err) {
             return res.status(500).send({ message: 'Error al buscar cotizaciones' });
         }
