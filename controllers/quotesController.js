@@ -44,6 +44,51 @@ const createQuote = (req, res) => {
     })
 }
 
+const getQuotes = (req, res) => {
+
+}
+
+const getQuote = (req, res) => {
+
+}
+
+const updateQuote = (req, res) => {
+
+}
+
+const deleteQuote = (req, res) => {
+
+}
+
+const getQuotesByCompany = (req, res) => {
+    const { id } = req.params;
+    Company.findById(id).populate('quotes').exec((err, company) => {
+        if (err) {
+            return res.status(500).send({ message: 'Error al buscar empresa' });
+        }
+        if (!company) {
+            return res.status(404).send({ message: 'No se ha encontrado la empresa' });
+        }
+        // filter by date, if it has more than 31 days old add to const oldQuotes otherwise add to const validQuotes
+        const oldQuotes = company.quotes.filter(quote => {
+            let today = new Date();
+            let quoteDate = new Date(quote.created);
+            let diffTime = Math.abs(today - quoteDate);
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays > 31;
+        })
+        const validQuotes = company.quotes.filter(quote => {
+            let today = new Date();
+            let quoteDate = new Date(quote.created);
+            let diffTime = Math.abs(today - quoteDate);
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays <= 31;
+        })
+        return res.status(200).send({ validQuotes, oldQuotes });
+    })
+}
+
 module.exports = {
-    createQuote
+    createQuote,
+    getQuotesByCompany
 }
