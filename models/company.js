@@ -33,7 +33,15 @@ const companySchema = new Schema({
     contact: {
         type: Schema.ObjectId,
         ref: 'contact',
-    }
+    },
+    quotes: [{
+        type: Schema.ObjectId,
+        ref: 'quote'
+    }]
+    // projects: [{
+    //     type: Schema.ObjectId,
+    //     ref: 'project'
+    // }],
 })
 
 module.exports = mongoose.model('company', companySchema);
