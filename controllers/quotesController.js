@@ -83,7 +83,31 @@ const getQuote = (req, res) => {
 }
 
 const updateQuote = (req, res) => {
-
+    const { id } = req.params;
+    const { name, description, services, company } = req.body;
+    Services.find({ _id: { $in: services } }, (err, services) => {
+        if (err) {
+            return res.status(500).send({ message: 'Error al buscar servicios' });
+        }
+        if (!services) {
+            return res.status(404).send({ message: 'No hay servicios' });
+        }
+        const quoteServices = services.map(service => {
+            return {
+                service: service._id,
+                price: service.price
+            }
+        })
+        Quotes.findByIdAndUpdate(id, { name, description, price: services.reduce((acc, service) => acc + service.price, 0), quoteServices, company }, { new: true }, (err, quoteUpdated) => {
+            if (err) {
+                return res.status(500).send({ message: 'Error al actualizar cotización' });
+            }
+            if (!quoteUpdated) {
+                return res.status(404).send({ message: 'No se ha podido actualizar la cotización' });
+            }
+            return res.status(200).send({ quote: quoteUpdated });
+        })
+    })
 }
 
 const deleteQuote = (req, res) => {
@@ -123,4 +147,5 @@ module.exports = {
     getQuotes,
     getActiveQuotes,
     getQuote,
+    updateQuote,
 }
