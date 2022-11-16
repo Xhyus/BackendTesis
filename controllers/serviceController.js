@@ -10,7 +10,7 @@ const createService = (req, res) => {
     })
     Item.insertMany(items, (err, itemsCreated) => {
         if (err) {
-            return res.status(500).send({ message: 'Error al crear el item' });
+            return res.status(500).send({ message: 'Error al crear los item' });
         }
         let itemsID = itemsCreated.map(item => {
             return item._id.toString()
@@ -23,8 +23,6 @@ const createService = (req, res) => {
             item: itemsID
         });
         service.save((err, serviceCreated) => {
-            console.log(err)
-
             if (err) {
                 return res.status(500).send({ message: 'Error al crear el servicio' });
             }
