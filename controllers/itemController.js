@@ -6,9 +6,7 @@ const createItem = (req, res) => {
     const { id } = req.params
     let items = []
     itemList.forEach(item => {
-        items.push(new Item({
-            description: item
-        }))
+        items.push(new Item({ description: item }))
     })
     Item.insertMany(items, (err, itemsCreated) => {
         if (err) {
