@@ -21,6 +21,11 @@ const serviceSchema = new Schema({
         maxLenght: 8,
         default: []
     },
+    type: {
+        type: String,
+        enum: ['design', 'development', 'marketing', 'other'],
+        required: true,
+    },
     created: {
         type: Date,
         default: Date.now()
