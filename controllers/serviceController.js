@@ -2,14 +2,35 @@ const Service = require('../models/service');
 const Item = require('../models/item');
 
 const createService = (req, res) => {
-    const { name, description, price, type } = req.body;
-    const newService = new Service({ name, description, price, type });
-    newService.save((err, serviceStored) => {
+    const { name, description, price, type, itemList } = req.body;
+    console.log(itemList)
+    let items = []
+    itemList.forEach(item => {
+        items.push(new Item({ description: item }))
+    })
+    Item.insertMany(items, (err, itemsCreated) => {
         if (err) {
-            return res.status(400).send({ message: 'Error al crear el servicio' });
+            return res.status(500).send({ message: 'Error al crear el item' });
         }
-        return res.status(201).send(serviceStored);
-    });
+        let itemsID = itemsCreated.map(item => {
+            return item._id.toString()
+        })
+        const service = new Service({
+            name,
+            description,
+            price,
+            type,
+            item: itemsID
+        });
+        service.save((err, serviceCreated) => {
+            console.log(err)
+
+            if (err) {
+                return res.status(500).send({ message: 'Error al crear el servicio' });
+            }
+            return res.status(200).send(serviceCreated);
+        });
+    })
 }
 
 const getServices = (req, res) => {
