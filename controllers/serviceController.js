@@ -2,8 +2,8 @@ const Service = require('../models/service');
 const Item = require('../models/item');
 
 const createService = (req, res) => {
-    const { name, description, price } = req.body;
-    const newService = new Service({ name, description, price });
+    const { name, description, price, type } = req.body;
+    const newService = new Service({ name, description, price, type });
     newService.save((err, serviceStored) => {
         if (err) {
             return res.status(400).send({ message: 'Error al crear el servicio' });
