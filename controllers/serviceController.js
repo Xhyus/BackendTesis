@@ -3,7 +3,6 @@ const Item = require('../models/item');
 
 const createService = (req, res) => {
     const { name, description, price, type, itemList } = req.body;
-    console.log(itemList)
     let items = []
     itemList.forEach(item => {
         items.push(new Item({ description: item }))

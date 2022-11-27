@@ -18,12 +18,11 @@ const serviceSchema = new Schema({
     item: {
         type: [Schema.ObjectId],
         ref: 'item',
-        maxLenght: 8,
-        default: []
+        maxLenght: 8
     },
     type: {
         type: String,
-        enum: ['design', 'development', 'marketing', 'other'],
+        enum: ['Diseño', 'Desarrollo', 'Marketing', 'Otros'],
         required: true,
     },
     created: {
