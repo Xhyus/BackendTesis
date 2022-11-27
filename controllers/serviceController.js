@@ -9,7 +9,7 @@ const createService = (req, res) => {
     })
     Item.insertMany(items, (err, itemsCreated) => {
         if (err) {
-            return res.status(500).send({ message: 'Error al crear los item' });
+            return res.status(400).send({ message: 'Error al crear los item' });
         }
         let itemsID = itemsCreated.map(item => {
             return item._id.toString()
@@ -23,7 +23,7 @@ const createService = (req, res) => {
         });
         service.save((err, serviceCreated) => {
             if (err) {
-                return res.status(500).send({ message: 'Error al crear el servicio' });
+                return res.status(400).send({ message: 'Error al crear el servicio' });
             }
             return res.status(200).send(serviceCreated);
         });
@@ -57,16 +57,29 @@ const getService = (req, res) => {
 
 const updateService = (req, res) => {
     const { id } = req.params;
-    req.body.updatedAt = Date.now();
-    Service.findByIdAndUpdate(id, req.body, (err, serviceUpdated) => {
+    const { name, description, price, type, itemList } = req.body;
+    let items = []
+    itemList.forEach(item => {
+        items.push(new Item({ description: item }))
+    })
+    Item.insertMany(items, (err, itemsCreated) => {
         if (err) {
-            return res.status(400).send({ message: 'Error al actualizar el servicio' });
+            return res.status(400).send({ message: 'Error al crear los item' });
         }
-        if (!serviceUpdated) {
-            return res.status(404).send({ message: 'El servicio no existe' });
+        let itemsID = itemsCreated.map(item => {
+            return item._id.toString()
+        })
+        Service.findByIdAndUpdate(id, { name, description, price, type, item: itemsID, updated: Date.now() }, { new: true }).populate('item').exec((err, serviceUpdated) => {
+            if (err) {
+                return res.status(400).send({ message: 'Error al actualizar el servicio' });
+            }
+            if (!serviceUpdated) {
+                return res.status(404).send({ message: 'El servicio no existe' });
+            }
+            return res.status(200).send(serviceUpdated);
         }
-        return res.status(200).send(serviceUpdated);
-    });
+        );
+    })
 }
 
 const deleteService = (req, res) => {
