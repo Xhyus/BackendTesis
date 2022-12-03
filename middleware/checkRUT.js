@@ -2,6 +2,7 @@ const rutlib = require('rutlib')
 const Company = require('../models/company')
 
 const checkRUT = (req, res, next) => {
+
     if (rutlib.validateRut(req.body.rut) && rutlib.validateRut(req.body.contactRut)) {
         Company.findOne({ rut: req.body.rut }, (err, company) => {
             if (err) {
