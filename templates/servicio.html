@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        /* font {
+            font-family: "Times New Roman", Times, serif;
+        } */
+
+        .fondo {
+            background-image: url("../assets/servicios.png");
+            background-repeat: no-repeat;
+            background-size: auto;
+        }
+
+        .espacio {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- use the class fondo to set the background to the page -->
+    <div class="container-fluid fondo">
+        <div class="row justify-content-center align-items-center espacio">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <h1 class="text-center display-1 font-weight-bold">Un solo servicio epico</h1>
+                <hr>
+                <h2 class="text-center">Total de graficas: {{servicio}}</h2>
+            </div>
+        </div>
+</body>
+
+</html>
