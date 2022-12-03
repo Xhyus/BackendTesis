@@ -32,6 +32,10 @@ const serviceSchema = new Schema({
     updated: {
         type: Date,
         default: Date.now()
+    },
+    deleted: {
+        type: Boolean,
+        default: false
     }
 });
 
