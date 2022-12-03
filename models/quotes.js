@@ -23,6 +23,25 @@ const QuoteSchema = new Schema({
             required: true
         }
     }],
+    formalization: {
+        type: String,
+        enum: ['Firma', 'Notario', 'Otros'],
+        required: true
+    },
+    Payment: {
+        type: String,
+        enum: ['Efectivo', 'Credito', 'Transferencia', 'Debito', 'Otros'],
+        required: true
+    },
+    PaymentMethod: {
+        type: String,
+        required: true
+    },
+    documents: {
+        type: String,
+        enum: ['Exenta', 'Afecta'],
+        required: true
+    },
     created: {
         type: Date,
         default: Date.now()
