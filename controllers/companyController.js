@@ -4,13 +4,13 @@ const Contact = require('../models/contact');
 const createCompany = (req, res) => {
     const { name, rut, address, phone, email, socialReason, state, contactName, contactRut, contactPhone, contactEmail, contactRole } = req.body;
     let newCompany
-    // check if contactPhone and phone contains at the beginning +56
     if (contactPhone.charAt(0) !== '+' && contactPhone.charAt(1) !== '5' && contactPhone.charAt(2) !== '6') {
         contactPhone = '+56' + contactPhone
     }
     if (phone.charAt(0) !== '+' && phone.charAt(1) !== '5' && phone.charAt(2) !== '6') {
         phone = '+56' + phone
     }
+
     const newContact = new Contact({
         name: contactName,
         rut: contactRut,
@@ -81,15 +81,47 @@ const getSpecificCompany = async (req, res) => {
 
 const updateCompany = async (req, res) => {
     const { id } = req.params;
-    const { name, rut, address, phone, email, contact, socialReason } = req.body;
-    Company.findByIdAndUpdate(id, { name, rut, address, phone, email, contact, socialReason }, { new: true }, (err, company) => {
+    const { name, rut, address, phone, email, socialReason, contactName, contactRut, contactPhone, contactEmail, contactRole, state } = req.body;
+    Company.findById(id, (err, company) => {
         if (err) {
-            return res.status(400).send({ message: 'Error al actualizar la empresa' });
+            return res.status(400).send({ message: 'Error al obtener la empresa' });
         }
         if (!company) {
             return res.status(404).send({ message: 'Empresa no encontrada' });
         }
-        return res.status(200).send(company);
+        Contact.findByIdAndUpdate(company.contact, { name: contactName, rut: contactRut, phone: contactPhone, email: contactEmail, role: contactRole }, (err, contact) => {
+            if (err) {
+                return res.status(400).send({ message: 'Error al actualizar el contacto' });
+            }
+            if (!contact) {
+                return res.status(404).send({ message: 'Contacto no encontrado' });
+            }
+            if (phone.charAt(0) !== '+' && phone.charAt(1) !== '5' && phone.charAt(2) !== '6') {
+                phone = '+56' + phone
+            }
+            if (state === 'unconstituted') {
+                Company.findByIdAndUpdate(id, { name, rut, phone, email }, (err, company) => {
+                    if (err) {
+                        return res.status(400).send({ message: 'Error al actualizar la empresa' });
+                    }
+                    if (!company) {
+                        return res.status(404).send({ message: 'Empresa no encontrada' });
+                    }
+                    return res.status(200).send(company);
+                })
+            } else {
+                Company.findByIdAndUpdate(id, { name, rut, address, phone, email, socialReason }, (err, company) => {
+                    if (err) {
+                        return res.status(400).send({ message: 'Error al actualizar la empresa' });
+                    }
+                    if (!company) {
+                        return res.status(404).send({ message: 'Empresa no encontrada' });
+                    }
+                    return res.status(200).send(company);
+                })
+            }
+
+        })
     })
 }
 
