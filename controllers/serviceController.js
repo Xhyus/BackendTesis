@@ -23,6 +23,7 @@ const createService = (req, res) => {
         });
         service.save((err, serviceCreated) => {
             if (err) {
+                console.log(err)
                 return res.status(400).send({ message: 'Error al crear el servicio' });
             }
             return res.status(200).send(serviceCreated);
@@ -31,7 +32,7 @@ const createService = (req, res) => {
 }
 
 const getServices = (req, res) => {
-    Service.find().populate('item').exec((err, services) => {
+    Service.find({ deleted: false }).populate('item').exec((err, services) => {
         if (err) {
             return res.status(400).send({ message: 'Error al obtener los servicios' });
         }
@@ -84,7 +85,7 @@ const updateService = (req, res) => {
 
 const deleteService = (req, res) => {
     const { id } = req.params;
-    Service.findByIdAndDelete(id, (err, serviceDeleted) => {
+    Service.findByIdAndUpdate(id, { deleted: true, updated: Date.now() }, { new: true }).populate('item').exec((err, serviceDeleted) => {
         if (err) {
             return res.status(400).send({ message: 'Error al eliminar el servicio' });
         }
@@ -92,7 +93,20 @@ const deleteService = (req, res) => {
             return res.status(404).send({ message: 'El servicio no existe' });
         }
         return res.status(200).send(serviceDeleted);
-    });
+    })
+}
+
+const activateService = (req, res) => {
+    const { id } = req.params;
+    Service.findByIdAndUpdate(id, { deleted: false, updated: Date.now() }, { new: true }).populate('item').exec((err, serviceActivated) => {
+        if (err) {
+            return res.status(400).send({ message: 'Error al activar el servicio' });
+        }
+        if (!serviceActivated) {
+            return res.status(404).send({ message: 'El servicio no existe' });
+        }
+        return res.status(200).send(serviceActivated);
+    })
 }
 
 module.exports = {
@@ -101,4 +115,5 @@ module.exports = {
     getService,
     updateService,
     deleteService,
+    activateService
 };
