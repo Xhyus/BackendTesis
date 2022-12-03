@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
@@ -26,6 +27,7 @@ app.use('/api', companyRoutes);
 app.use('/api', signedRoutes);
 app.use('/api', pdfRoutes);
 app.use('/api', quoteRoutes);
+app.use('/assets', express.static(path.join(__dirname, '/assets')))
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
