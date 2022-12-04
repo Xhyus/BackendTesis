@@ -1,16 +1,10 @@
 const Company = require('../models/company');
 const Contact = require('../models/contact');
+const { sendMail } = require('../services/transporter');
 
 const createCompany = (req, res) => {
     const { name, rut, address, phone, email, socialReason, state, contactName, contactRut, contactPhone, contactEmail, contactRole } = req.body;
     let newCompany
-    if (contactPhone.charAt(0) !== '+' && contactPhone.charAt(1) !== '5' && contactPhone.charAt(2) !== '6') {
-        contactPhone = '+56' + contactPhone
-    }
-    if (phone.charAt(0) !== '+' && phone.charAt(1) !== '5' && phone.charAt(2) !== '6') {
-        phone = '+56' + phone
-    }
-
     const newContact = new Contact({
         name: contactName,
         rut: contactRut,
@@ -49,6 +43,7 @@ const createCompany = (req, res) => {
                     }
                     return res.status(400).send({ message: 'Error al crear la empresa' });
                 }
+                sendMail(name)
                 return res.status(201).send(company);
             })
         })
