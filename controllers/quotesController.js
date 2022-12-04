@@ -3,7 +3,7 @@ const Company = require('../models/company');
 const Services = require('../models/service');
 
 const createQuote = (req, res) => {
-    const { name, description, services, company } = req.body;
+    const { name, description, services, company, formalization, payment, paymentMethod, documents } = req.body;
     Services.find({ _id: { $in: services } }, (err, services) => {
         if (err) {
             return res.status(500).send({ message: 'Error al buscar servicios' });
@@ -22,7 +22,11 @@ const createQuote = (req, res) => {
             description,
             price: services.reduce((acc, service) => acc + service.price, 0),
             quoteServices,
-            company
+            company,
+            formalization,
+            payment,
+            paymentMethod,
+            documents
         });
         quote.save((err, quoteStored) => {
             if (err) {
@@ -69,7 +73,7 @@ const getActiveQuotes = (req, res) => {
 
 const getQuote = (req, res) => {
     const { id } = req.params;
-    Quotes.findById(id).populate('company').exec((err, quote) => {
+    Quotes.findById(id).populate({ path: 'company', populate: { path: 'contact' } }).exec((err, quote) => {
         if (err) {
             return res.status(500).send({ message: 'Error al buscar cotización' });
         }
@@ -82,7 +86,7 @@ const getQuote = (req, res) => {
 
 const updateQuote = (req, res) => {
     const { id } = req.params;
-    const { name, description, services, company } = req.body;
+    const { services } = req.body;
     Services.find({ _id: { $in: services } }, (err, services) => {
         if (err) {
             return res.status(500).send({ message: 'Error al buscar servicios' });
@@ -90,13 +94,14 @@ const updateQuote = (req, res) => {
         if (!services) {
             return res.status(404).send({ message: 'No hay servicios' });
         }
-        const quoteServices = services.map(service => {
+        req.body.quoteServices = services.map(service => {
             return {
                 service: service._id,
                 price: service.price
             }
         })
-        Quotes.findByIdAndUpdate(id, { name, description, price: services.reduce((acc, service) => acc + service.price, 0), quoteServices, company }, { new: true }, (err, quoteUpdated) => {
+        req.body.price = services.reduce((acc, service) => acc + service.price, 0);
+        Quotes.findByIdAndUpdate(id, req.body, { new: true }).populate({ path: 'company', populate: { path: 'contact' }, path: 'services' }).exec((err, quoteUpdated) => {
             if (err) {
                 return res.status(500).send({ message: 'Error al actualizar cotización' });
             }
@@ -110,7 +115,7 @@ const updateQuote = (req, res) => {
 
 const deleteQuote = (req, res) => {
     const { id } = req.params;
-    Quotes.findByIdAndUpdate(id, { active: false }, { new: true }, (err, quoteUpdated) => {
+    Quotes.findByIdAndUpdate(id, { status: false }, { new: true }, (err, quoteUpdated) => {
         if (err) {
             return res.status(500).send({ message: 'Error al eliminar cotización' });
         }
