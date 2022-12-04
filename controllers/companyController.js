@@ -84,15 +84,12 @@ const updateCompany = async (req, res) => {
         if (!company) {
             return res.status(404).send({ message: 'Empresa no encontrada' });
         }
-        Contact.findByIdAndUpdate(company.contact, { name: contactName, rut: contactRut, phone: contactPhone, email: contactEmail, role: contactRole }, (err, contact) => {
+        Contact.findByIdAndUpdate(company.contact, { name: contactName, rut: contactRut, phone: contactPhone, email: contactEmail, role: contactRole }, { new: true }, (err, contact) => {
             if (err) {
                 return res.status(400).send({ message: 'Error al actualizar el contacto' });
             }
             if (!contact) {
                 return res.status(404).send({ message: 'Contacto no encontrado' });
-            }
-            if (phone.charAt(0) !== '+' && phone.charAt(1) !== '5' && phone.charAt(2) !== '6') {
-                phone = '+56' + phone
             }
             if (state === 'unconstituted') {
                 Company.findByIdAndUpdate(id, { name, rut, phone, email }, (err, company) => {
