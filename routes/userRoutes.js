@@ -12,5 +12,6 @@ api.put('/update-password/:id', auth.auth, userController.updatePassword);
 api.post('/login', userController.login);
 api.get('/checkToken', auth.auth, userController.checkToken);
 api.get('/logout', auth.auth, userController.logout);
+api.post('/recoverPassword', userController.recoverPassword);
 
 module.exports = api;
