@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const token = require('../services/token');
+const { sendMailRecoverPassword } = require('../services/transporter');
 
 const createUser = async (req, res) => {
     let { name } = req.body;
@@ -113,6 +114,34 @@ const checkToken = (req, res) => {
     return res.status(200).send({ message: 'Token correcto' })
 }
 
+const recoverPassword = (req, res) => {
+    let email = req.body.email.toLowerCase();
+    User.findOne({ 'email': email }, (err, user) => {
+        if (err) {
+            return res.status(400).send({ message: `Error al validar el usuario` })
+        }
+        if (!user) {
+            return res.status(404).send({ message: `El usuario no existe` })
+        }
+        let newPassword = Math.random().toString(36).slice(-8);
+        bcrypt.hash(newPassword, 10, (err, hash) => {
+            if (err) {
+                return res.status(400).send({ message: `Error al validar el usuario` })
+            }
+            User.findByIdAndUpdate(user._id, { password: hash }, (err, user) => {
+                if (err) {
+                    return res.status(400).send({ message: "No se ha podido actualizar la contraseña" })
+                }
+                if (!user) {
+                    return res.status(404).send({ message: "No se ha encontrado el usuario" })
+                }
+                sendMailRecoverPassword(email, newPassword);
+                return res.status(200).send({ message: 'Contraseña actualizada' })
+            });
+        })
+    })
+}
+
 module.exports = {
     createUser,
     getUsers,
@@ -122,5 +151,6 @@ module.exports = {
     updatePassword,
     login,
     checkToken,
-    logout
+    logout,
+    recoverPassword
 }
