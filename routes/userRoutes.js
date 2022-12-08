@@ -13,5 +13,6 @@ api.post('/login', userController.login);
 api.get('/checkToken', auth.auth, userController.checkToken);
 api.get('/logout', auth.auth, userController.logout);
 api.post('/recoverPassword', userController.recoverPassword);
+api.put('/changePassword', auth.auth, userController.changePassword);
 
 module.exports = api;
