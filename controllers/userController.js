@@ -142,6 +142,44 @@ const recoverPassword = (req, res) => {
     })
 }
 
+const changePassword = (req, res) => {
+    const user = req.user;
+    const { password, newPassword, rePassword } = req.body;
+    if (newPassword !== rePassword) {
+        return res.status(400).send({ message: 'Las contraseñas no coinciden' })
+    }
+    User.findById(user, (err, user) => {
+        if (err) {
+            return res.status(400).send({ message: 'Error al validar el usuario' })
+        }
+        if (!user) {
+            return res.status(404).send({ message: 'El usuario no existe' })
+        }
+        bcrypt.compare(password, user.password, (err, result) => {
+            if (err) {
+                return res.status(400).send({ message: 'Error al validar el usuario' })
+            }
+            if (!result) {
+                return res.status(400).send({ message: 'Contraseña incorrecta' })
+            }
+            bcrypt.hash(newPassword, 10, (err, hash) => {
+                if (err) {
+                    return res.status(400).send({ message: 'Error al validar el usuario' })
+                }
+                User.findByIdAndUpdate(user._id, { password: hash }, (err, user) => {
+                    if (err) {
+                        return res.status(400).send({ message: 'No se ha podido actualizar la contraseña' })
+                    }
+                    if (!user) {
+                        return res.status(404).send({ message: 'No se ha encontrado el usuario' })
+                    }
+                    return res.status(200).send({ message: 'Contraseña actualizada' })
+                })
+            })
+        })
+    })
+}
+
 module.exports = {
     createUser,
     getUsers,
@@ -152,5 +190,6 @@ module.exports = {
     login,
     checkToken,
     logout,
-    recoverPassword
+    recoverPassword,
+    changePassword
 }
