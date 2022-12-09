@@ -4,9 +4,15 @@ const token = require('../services/token');
 const { sendMailRecoverPassword } = require('../services/transporter');
 
 const createUser = async (req, res) => {
-    let { name } = req.body;
-    let passwordHash = await bcrypt.hash(req.body.password, 10);
+    let { name, password, rePassword } = req.body;
+    if (password !== rePassword) {
+        return res.status(400).send({ message: "Las contraseñas no coinciden" })
+    }
     let email = req.body.email.toLowerCase();
+    let passwordHash = await bcrypt.hash(req.body.password, 10);
+    if ((email.slit('@')[1] !== 'estudiofragua.cl') || (email.slit('@')[1] !== 'pryx.cl')) {
+        return res.status(400).send({ message: "El correo no es válido" })
+    }
     const user = new User({
         name,
         email,
