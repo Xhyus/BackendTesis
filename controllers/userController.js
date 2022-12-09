@@ -4,26 +4,35 @@ const token = require('../services/token');
 const { sendMailRecoverPassword } = require('../services/transporter');
 
 const createUser = async (req, res) => {
-    let { name, password, rePassword } = req.body;
+    let { name, password, rePassword, email } = req.body;
+    email = email.toLowerCase();
     if (password !== rePassword) {
         return res.status(400).send({ message: "Las contraseñas no coinciden" })
     }
-    let email = req.body.email.toLowerCase();
     let passwordHash = await bcrypt.hash(req.body.password, 10);
-    if ((email.slit('@')[1] !== 'estudiofragua.cl') || (email.slit('@')[1] !== 'pryx.cl')) {
-        return res.status(400).send({ message: "El correo no es válido" })
+    if (email.includes("@pryx.cl") || email.includes("@estudiofragua.cl")) {
+        User.findOne({ email: email }, (err, user) => {
+            if (err) {
+                return res.status(400).send({ message: "No se ha podido crear el usuario" })
+            }
+            if (user) {
+                return res.status(400).send({ message: "El usuario ya existe" })
+            }
+            const newUser = new User({
+                name,
+                email,
+                password: passwordHash
+            });
+            newUser.save((err, user) => {
+                if (err) {
+                    return res.status(400).send({ message: "No se ha podido crear el usuario" })
+                }
+                return res.status(201).send(user);
+            });
+        });
+    } else {
+        return res.status(400).send({ message: "El email no es válido" })
     }
-    const user = new User({
-        name,
-        email,
-        password: passwordHash
-    });
-    user.save((err, user) => {
-        if (err) {
-            return res.status(400).send({ message: "No se ha podido crear el usuario" })
-        }
-        return res.status(201).send(user);
-    });
 }
 
 const getUsers = (req, res) => {

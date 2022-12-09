@@ -3,7 +3,7 @@ const api = express.Router();
 const userController = require('../controllers/userController');
 const auth = require('../middleware/auth');
 
-api.post('/create-user', auth.auth, userController.createUser);
+api.post('/user', auth.auth, userController.createUser);
 api.get('/get-users', auth.auth, userController.getUsers);
 api.get('/get-user/:id', auth.auth, userController.getUser);
 api.put('/update-user/:id', auth.auth, userController.updateUser);
