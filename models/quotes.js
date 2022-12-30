@@ -25,7 +25,7 @@ const QuoteSchema = new Schema({
     }],
     formalization: {
         type: String,
-        enum: ['Firma', 'Contrato', 'Confidencialidad'], // 'Firma del presente contrato',Firma de contrato de servicio,Firma de contrato de servicio y confidencialidad
+        enum: ['Firma', 'Contrato', 'Confidencialidad'],
         required: true
     },
     payment: {

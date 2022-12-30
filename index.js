@@ -11,7 +11,6 @@ const itemRoutes = require('./routes/itemRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const signedRoutes = require('./routes/signedRoutes');
-const pdfRoutes = require('./routes/pdfRoutes');
 const quoteRoutes = require('./routes/quoteRoutes');
 
 const app = express()
@@ -25,7 +24,6 @@ app.use('/api', itemRoutes);
 app.use('/api', contactRoutes);
 app.use('/api', companyRoutes);
 app.use('/api', signedRoutes);
-app.use('/api', pdfRoutes);
 app.use('/api', quoteRoutes);
 app.use('/assets', express.static(path.join(__dirname, '/assets')))
 
