@@ -14,11 +14,11 @@
             "type": "Number",
             "required": true
         },
-        "itemList": {
+        "item": {
             "type": [
                 "Schema.ObjectId"
             ],
-            "ref": "Item",
+            "ref": "item",
             "required": true,
             "maxLength": 8
         },
@@ -29,6 +29,20 @@
         "updated": {
             "type": "Date",
             "default": "Date.now()"
+        },
+        "type": {
+            "type": "String",
+            "enum": [
+                "Diseño",
+                "Desarrollo",
+                "Marketing",
+                "Otros"
+            ],
+            "required": true
+        },
+        "deleted": {
+            "type": "Boolean",
+            "default": false
         }
     },
     "item": {
@@ -53,7 +67,8 @@
             "rut": {
                 "type": "String",
                 "required": true,
-                "maxLength": 12
+                "maxLength": 12,
+                "unique": true
             },
             "email": {
                 "type": "String",
@@ -74,7 +89,13 @@
                 "type": "Schema.ObjectId",
                 "ref": "Contact",
                 "required": true
-            }
+            },
+            "quotes": [
+                {
+                    "type": "Schema.ObjectId",
+                    "ref": "Quote"
+                }
+            ]
         }
     ],
     "contact": {
@@ -176,14 +197,6 @@
                 "type": "Number",
                 "required": true
             },
-            "services": {
-                "type": [
-                    "Schema.ObjectId"
-                ],
-                "ref": "QuoteService",
-                "required": true,
-                "maxLength": 8
-            },
             "created": {
                 "type": "Date",
                 "default": "Date.now()"
@@ -191,6 +204,60 @@
             "updated": {
                 "type": "Date",
                 "default": "Date.now()"
+            },
+            "quoteServices": [
+                {
+                    "service": {
+                        "type": [
+                            "Schema.Types.ObjectId"
+                        ],
+                        "ref": "services"
+                    },
+                    "price": {
+                        "type": "Number",
+                        "required": true
+                    }
+                }
+            ],
+            "formalization": {
+                "type": "String",
+                "enum": [
+                    "Firma",
+                    "Contrato",
+                    "Confidencialidad"
+                ],
+                "required": true
+            },
+            "payment": {
+                "type": "String",
+                "enum": [
+                    "Efectivo",
+                    "Credito",
+                    "Transferencia",
+                    "Debito",
+                    "Otros"
+                ],
+                "required": true
+            },
+            "paymentMethod": {
+                "type": "String",
+                "required": true
+            },
+            "documents": {
+                "type": "String",
+                "enum": [
+                    "Exenta",
+                    "Afecta"
+                ],
+                "required": true
+            },
+            "company": {
+                "type": "Schema.Types.ObjectId",
+                "ref": "company"
+            },
+            "status": {
+                "type": "Boolean",
+                "default": true
             }
         }
     ],
@@ -229,6 +296,29 @@
             "type": "String",
             "required": true,
             "maxLength": 100
+        }
+    },
+    "signed": {
+        "type": {
+            "type": "String",
+            "enum": [
+                "signed",
+                "unsigned"
+            ],
+            "default": "unsigned"
+        },
+        "use": {
+            "type": "String",
+            "enum": [
+                "recovery",
+                "company"
+            ],
+            "required": true
+        },
+        "left": {
+            "type": "Number",
+            "default": 0,
+            "limit": 3
         }
     }
 }
