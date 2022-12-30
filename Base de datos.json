@@ -145,42 +145,6 @@
             }
         }
     ],
-    "note": [
-        {
-            "name": {
-                "type": "String",
-                "required": true,
-                "maxLength": 100
-            },
-            "tasks": {
-                "type": [
-                    "Schema.ObjectId"
-                ],
-                "ref": "Task",
-                "required": true
-            },
-            "created": {
-                "type": "Date",
-                "default": "Date.now()"
-            },
-            "createdBy": {
-                "type": "Schema.ObjectId",
-                "ref": "User",
-                "required": true
-            }
-        }
-    ],
-    "task": {
-        "description": {
-            "type": "String",
-            "required": true,
-            "maxLength": 250
-        },
-        "status": {
-            "type": "Boolean",
-            "default": false
-        }
-    },
     "quotes": [
         {
             "name": {
@@ -261,43 +225,6 @@
             }
         }
     ],
-    "quoteService": {
-        "service": {
-            "type": "Schema.ObjectId",
-            "ref": "Service",
-            "required": true
-        },
-        "price": {
-            "type": "Number",
-            "required": true
-        }
-    },
-    "documents": {
-        "name": {
-            "type": "String",
-            "required": true,
-            "maxLength": 100
-        },
-        "description": {
-            "type": "String",
-            "required": true,
-            "maxLength": 250
-        },
-        "file": {
-            "type": "String",
-            "required": true,
-            "maxLength": 250
-        },
-        "uploadedDate": {
-            "type": "Date",
-            "default": "Date.now()"
-        },
-        "fileType": {
-            "type": "String",
-            "required": true,
-            "maxLength": 100
-        }
-    },
     "signed": {
         "type": {
             "type": "String",
