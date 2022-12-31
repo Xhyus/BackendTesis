@@ -60,7 +60,7 @@ const getQuotes = (req, res) => {
     })
 }
 const getActiveQuotes = (req, res) => {
-    Quotes.find({ created: { $gte: new Date(new Date().getTime() - 31 * 24 * 60 * 60 * 1000) }, active: true }).populate('company').exec((err, quotes) => {
+    Quotes.find({ end: { $gte: new Date() }, status: true }).populate({ path: "company", populate: { path: "contact" } }).exec((err, quotes) => {
         if (err) {
             return res.status(500).send({ message: 'Error al buscar cotizaciones' });
         }
@@ -73,8 +73,9 @@ const getActiveQuotes = (req, res) => {
 
 const getQuote = (req, res) => {
     const { id } = req.params;
-    Quotes.findById(id).populate({ path: 'company', populate: { path: 'contact' } }).exec((err, quote) => {
+    Quotes.findById(id).populate({ path: 'company ', populate: { path: 'contact' } }).populate({ path: 'quoteServices.service' }).exec((err, quote) => {
         if (err) {
+            console.log(err)
             return res.status(500).send({ message: 'Error al buscar cotización' });
         }
         if (!quote) {
@@ -101,6 +102,7 @@ const updateQuote = (req, res) => {
             }
         })
         req.body.price = services.reduce((acc, service) => acc + service.price, 0);
+        req.body.end = new Date(new Date().setDate(new Date().getDate() + 31));
         Quotes.findByIdAndUpdate(id, req.body, { new: true }).populate({ path: 'company', populate: { path: 'contact' }, path: 'services' }).exec((err, quoteUpdated) => {
             if (err) {
                 return res.status(500).send({ message: 'Error al actualizar cotización' });
