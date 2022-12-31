@@ -16,7 +16,7 @@ const QuoteSchema = new Schema({
     quoteServices: [{
         service: {
             type: [Schema.Types.ObjectId],
-            ref: 'services'
+            ref: 'service'
         },
         price: {
             type: Number,
@@ -49,6 +49,10 @@ const QuoteSchema = new Schema({
     updated: {
         type: Date,
         default: Date.now()
+    },
+    end: {
+        type: Date,
+        default: new Date(Date.now() + 31 * 24 * 60 * 60 * 1000)
     },
     company: {
         type: Schema.Types.ObjectId,
