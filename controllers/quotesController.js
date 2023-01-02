@@ -73,9 +73,8 @@ const getActiveQuotes = (req, res) => {
 
 const getQuote = (req, res) => {
     const { id } = req.params;
-    Quotes.findById(id).populate({ path: 'company ', populate: { path: 'contact' } }).populate({ path: 'quoteServices.service' }).exec((err, quote) => {
+    Quotes.findById(id).populate({ path: 'company ', populate: { path: 'contact' } }).populate({ path: 'quoteServices.service ', populate: { path: 'quoteServices.service item' } }).exec((err, quote) => {
         if (err) {
-            console.log(err)
             return res.status(500).send({ message: 'Error al buscar cotización' });
         }
         if (!quote) {
