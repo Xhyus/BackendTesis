@@ -32,7 +32,7 @@ const createService = (req, res) => {
 }
 
 const getServices = (req, res) => {
-    Service.find({ deleted: false }).populate('item').exec((err, services) => {
+    Service.find({ deleted: false }).sort({ _id: -1 }).populate('item').exec((err, services) => {
         if (err) {
             return res.status(400).send({ message: 'Error al obtener los servicios' });
         }

@@ -3,7 +3,7 @@ const Company = require('../models/company');
 const Services = require('../models/service');
 
 const createQuote = (req, res) => {
-    const { name, description, services, company, formalization, payment, paymentMethod, documents } = req.body;
+    const { name, description, services, company, formalization, payment, paymentMethod, documents, projectDelivery } = req.body;
     Services.find({ _id: { $in: services } }, (err, services) => {
         if (err) {
             return res.status(500).send({ message: 'Error al buscar servicios' });
@@ -26,7 +26,8 @@ const createQuote = (req, res) => {
             formalization,
             payment,
             paymentMethod,
-            documents
+            documents,
+            projectDelivery
         });
         quote.save((err, quoteStored) => {
             if (err) {
@@ -60,7 +61,7 @@ const getQuotes = (req, res) => {
     })
 }
 const getActiveQuotes = (req, res) => {
-    Quotes.find({ end: { $gte: new Date() }, status: true }).populate({ path: "company", populate: { path: "contact" } }).exec((err, quotes) => {
+    Quotes.find({ end: { $gte: new Date() } }).populate({ path: "company", populate: { path: "contact" } }).exec((err, quotes) => {
         if (err) {
             return res.status(500).send({ message: 'Error al buscar cotizaciones' });
         }
@@ -84,46 +85,29 @@ const getQuote = (req, res) => {
     })
 }
 
-const updateQuote = (req, res) => {
-    const { id } = req.params;
-    const { services } = req.body;
-    Services.find({ _id: { $in: services } }, (err, services) => {
+const getClientQuote = (req, res) => {
+    const { url } = req.params;
+    Quotes.findOne({ url }).populate({ path: 'company ', populate: { path: 'contact' } }).populate({ path: 'quoteServices.service ', populate: { path: 'quoteServices.service item' } }).exec((err, quote) => {
         if (err) {
-            return res.status(500).send({ message: 'Error al buscar servicios' });
+            return res.status(500).send({ message: 'Error al buscar cotización' });
         }
-        if (!services) {
-            return res.status(404).send({ message: 'No hay servicios' });
+        if (!quote) {
+            return res.status(404).send({ message: 'No existe la cotización' });
         }
-        req.body.quoteServices = services.map(service => {
-            return {
-                service: service._id,
-                price: service.price
-            }
-        })
-        req.body.price = services.reduce((acc, service) => acc + service.price, 0);
-        req.body.end = new Date(new Date().setDate(new Date().getDate() + 31));
-        Quotes.findByIdAndUpdate(id, req.body, { new: true }).populate({ path: 'company', populate: { path: 'contact' }, path: 'services' }).exec((err, quoteUpdated) => {
-            if (err) {
-                return res.status(500).send({ message: 'Error al actualizar cotización' });
-            }
-            if (!quoteUpdated) {
-                return res.status(404).send({ message: 'No se ha podido actualizar la cotización' });
-            }
-            return res.status(200).send({ quote: quoteUpdated });
-        })
+        return res.status(200).send(quote);
     })
 }
 
 const deleteQuote = (req, res) => {
     const { id } = req.params;
-    Quotes.findByIdAndUpdate(id, { status: false }, { new: true }, (err, quoteUpdated) => {
+    Quotes.findByIdAndDelete(id, (err, quoteDeleted) => {
         if (err) {
-            return res.status(500).send({ message: 'Error al eliminar cotización' });
+            return res.status(500).send({ message: 'Error al borrar cotización' });
         }
-        if (!quoteUpdated) {
-            return res.status(404).send({ message: 'No se ha podido eliminar la cotización' });
+        if (!quoteDeleted) {
+            return res.status(404).send({ message: 'No se ha podido borrar la cotización' });
         }
-        return res.status(200).send({ quote: quoteUpdated });
+        return res.status(200).send({ message: 'Cotización eliminada correctamente' });
     })
 }
 
@@ -136,21 +120,9 @@ const getQuotesByCompany = (req, res) => {
         if (!company) {
             return res.status(404).send({ message: 'No se ha encontrado la empresa' });
         }
-        const oldQuotes = company.quotes.filter(quote => {
-            let today = new Date();
-            let quoteDate = new Date(quote.created);
-            let diffTime = Math.abs(today - quoteDate);
-            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            return diffDays > 31;
-        })
-        const validQuotes = company.quotes.filter(quote => {
-            let today = new Date();
-            let quoteDate = new Date(quote.created);
-            let diffTime = Math.abs(today - quoteDate);
-            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            return diffDays <= 31;
-        })
-        return res.status(200).send({ validQuotes, oldQuotes });
+        const oldQuotes = company.quotes.filter(quote => quote.end < new Date());
+        const activeQuotes = company.quotes.filter(quote => quote.end >= new Date());
+        return res.status(200).send({ oldQuotes, activeQuotes });
     })
 }
 
@@ -160,6 +132,6 @@ module.exports = {
     getQuotes,
     getActiveQuotes,
     getQuote,
-    updateQuote,
-    deleteQuote
+    deleteQuote,
+    getClientQuote
 }

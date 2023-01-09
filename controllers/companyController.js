@@ -1,9 +1,10 @@
 const Company = require('../models/company');
 const Contact = require('../models/contact');
+const Signed = require('../models/signed')
 const { sendMail } = require('../services/transporter');
 
 const createCompany = (req, res) => {
-    const { name, rut, address, phone, email, socialReason, state, contactName, contactRut, contactPhone, contactEmail, contactRole } = req.body;
+    const { name, rut, address, phone, email, socialReason, state, contactName, contactRut, contactPhone, contactEmail, contactRole, signedID } = req.body;
     let newCompany
     const newContact = new Contact({
         name: contactName,
@@ -43,6 +44,7 @@ const createCompany = (req, res) => {
                     }
                     return res.status(400).send({ message: 'Error al crear la empresa' });
                 }
+                Signed.findByIdAndUpdate(signedID, { type: "signed" })
                 sendMail(name)
                 return res.status(201).send(company);
             })
