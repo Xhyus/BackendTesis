@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 const Schema = mongoose.Schema;
 const QuoteSchema = new Schema({
     name: {
@@ -46,22 +47,25 @@ const QuoteSchema = new Schema({
         type: Date,
         default: Date.now()
     },
-    updated: {
-        type: Date,
-        default: Date.now()
-    },
     end: {
         type: Date,
-        default: new Date(Date.now() + 31 * 24 * 60 * 60 * 1000)
+        default: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
     },
     company: {
         type: Schema.Types.ObjectId,
         ref: 'company'
     },
-    status: {
-        type: Boolean,
-        default: true
-    }
+    projectDelivery: {
+        type: String,
+        required: true
+    },
+    url: {
+        type: String,
+        default: function () {
+            return crypto.createHash('md5').update(this._id.toString()).digest('hex');
+        },
+        unique: true
+    },
 })
 
 module.exports = mongoose.model('quote', QuoteSchema);
