@@ -65,14 +65,34 @@ const getCompanies = async (req, res) => {
 
 const getSpecificCompany = async (req, res) => {
     const { id } = req.params;
-    Company.findById(id).populate('contact').exec((err, company) => {
+    Company.findById(id).populate('contact quotes').exec((err, company) => {
         if (err) {
             return res.status(400).send({ message: 'Error al obtener la empresa' });
         }
         if (!company) {
             return res.status(404).send({ message: 'Empresa no encontrada' });
         }
-        return res.status(200).send(company);
+        let expiredQuote = []
+        let validQuote = []
+        company.quotes.forEach(quote => {
+            if (quote.end < Date.now()) {
+                expiredQuote.push(quote)
+            } else {
+                validQuote.push(quote)
+            }
+        })
+        let companyValues = {
+            name: company.name,
+            rut: company.rut,
+            address: company.address,
+            phone: company.phone,
+            email: company.email,
+            socialReason: company.socialReason,
+            contact: company.contact,
+            expiredQuote: expiredQuote,
+            validQuote: validQuote
+        }
+        return res.status(200).send(companyValues);
     })
 }
 
