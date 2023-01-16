@@ -82,6 +82,7 @@ const getSpecificCompany = async (req, res) => {
             }
         })
         let companyValues = {
+            _id: company._id,
             name: company.name,
             rut: company.rut,
             address: company.address,
@@ -98,7 +99,21 @@ const getSpecificCompany = async (req, res) => {
 
 const updateCompany = async (req, res) => {
     const { id } = req.params;
-    const { name, rut, address, phone, email, socialReason, contactName, contactRut, contactPhone, contactEmail, contactRole, state } = req.body;
+    const companyValues = {
+        name: req.body.name,
+        rut: req.body.rut,
+        address: req.body.address,
+        phone: req.body.phone,
+        email: req.body.email,
+        socialReason: req.body.state === 'constituted' ? req.body.socialReason : undefined,
+    }
+    const contactValues = {
+        name: req.body.contactName,
+        rut: req.body.contactRut,
+        phone: req.body.contactPhone,
+        email: req.body.contactEmail,
+        role: req.body.contactRole
+    }
     Company.findById(id, (err, company) => {
         if (err) {
             return res.status(400).send({ message: 'Error al obtener la empresa' });
@@ -106,35 +121,22 @@ const updateCompany = async (req, res) => {
         if (!company) {
             return res.status(404).send({ message: 'Empresa no encontrada' });
         }
-        Contact.findByIdAndUpdate(company.contact, { name: contactName, rut: contactRut, phone: contactPhone, email: contactEmail, role: contactRole }, { new: true }, (err, contact) => {
+        Contact.findByIdAndUpdate(company.contact, contactValues, { new: true }, (err, contact) => {
             if (err) {
                 return res.status(400).send({ message: 'Error al actualizar el contacto' });
             }
             if (!contact) {
                 return res.status(404).send({ message: 'Contacto no encontrado' });
             }
-            if (state === 'unconstituted') {
-                Company.findByIdAndUpdate(id, { name, rut, phone, email }, (err, company) => {
-                    if (err) {
-                        return res.status(400).send({ message: 'Error al actualizar la empresa' });
-                    }
-                    if (!company) {
-                        return res.status(404).send({ message: 'Empresa no encontrada' });
-                    }
-                    return res.status(200).send(company);
-                })
-            } else {
-                Company.findByIdAndUpdate(id, { name, rut, address, phone, email, socialReason }, (err, company) => {
-                    if (err) {
-                        return res.status(400).send({ message: 'Error al actualizar la empresa' });
-                    }
-                    if (!company) {
-                        return res.status(404).send({ message: 'Empresa no encontrada' });
-                    }
-                    return res.status(200).send(company);
-                })
-            }
-
+            Company.findByIdAndUpdate(id, companyValues, { new: true }, (err, company) => {
+                if (err) {
+                    return res.status(400).send({ message: 'Error al actualizar la empresa' });
+                }
+                if (!company) {
+                    return res.status(404).send({ message: 'Empresa no encontrada' });
+                }
+                return res.status(200).send(company);
+            })
         })
     })
 }

@@ -8,11 +8,13 @@ const companySchema = new Schema({
     },
     socialReason: {
         type: String,
-        maxlength: 100
+        maxlength: 100,
+        default: null
     },
     address: {
         type: String,
-        maxlength: 250
+        maxlength: 250,
+        required: true
     },
     rut: {
         type: String,
@@ -33,6 +35,7 @@ const companySchema = new Schema({
     contact: {
         type: Schema.ObjectId,
         ref: 'contact',
+        required: true
     },
     quotes: [{
         type: Schema.ObjectId,

@@ -61,7 +61,7 @@ const getQuotes = (req, res) => {
     })
 }
 const getActiveQuotes = (req, res) => {
-    Quotes.find({ end: { $gte: new Date() } }).populate({ path: "company", populate: { path: "contact" } }).exec((err, quotes) => {
+    Quotes.find({ end: { $gte: new Date() } }).populate({ path: "company", populate: { path: "contact" } }).sort({ end: -1 }).exec((err, quotes) => {
         if (err) {
             return res.status(500).send({ message: 'Error al buscar cotizaciones' });
         }
