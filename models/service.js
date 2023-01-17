@@ -9,7 +9,7 @@ const serviceSchema = new Schema({
     description: {
         type: String,
         required: true,
-        maxLenght: 250
+        maxLenght: 350
     },
     price: {
         type: Number,
