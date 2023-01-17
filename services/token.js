@@ -1,14 +1,11 @@
-const jwt = require('jwt-simple')
-const moment = require('moment')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 const createToken = (user) => {
     const payload = {
-        sub: user._id,
-        iat: moment().unix(),
-        exp: moment().add(6, 'hours').unix(),
+        id: user._id
     }
-    return jwt.encode(payload, process.env.SECRET_TOKEN)
+    return jwt.sign(payload, process.env.SECRET_TOKEN, { expiresIn: '1h' })
 }
 
 module.exports = { createToken };
