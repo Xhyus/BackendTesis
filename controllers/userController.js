@@ -158,8 +158,7 @@ const recoverPassword = (req, res) => {
 }
 
 const changePassword = (req, res) => {
-    const user = req.user;
-    const { password, newPassword, rePassword } = req.body;
+    const { password, newPassword, rePassword, user } = req.body;
     if (newPassword !== rePassword) {
         return res.status(400).send({ message: 'Las contraseñas no coinciden' })
     }
