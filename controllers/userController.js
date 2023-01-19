@@ -115,7 +115,7 @@ const login = (req, res) => {
                 return res.status(400).send({ message: `Contraseña incorrecta` })
             }
             res.cookie('token', token.createToken(user), { httpOnly: true });
-            return res.status(200).send({ message: 'Contraseña correcta', token: token.createToken(user), user: user.name })
+            return res.status(200).send({ message: 'Contraseña correcta', token: token.createToken(user), user: user.name, user_id: user._id })
         })
     })
 }
