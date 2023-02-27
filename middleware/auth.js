@@ -1,21 +1,24 @@
-const jwt = require('jwt-simple')
+const jwt = require('jsonwebtoken')
 const moment = require('moment')
 require('dotenv').config()
 
 const auth = (req, res, next) => {
-    const cookies = req.cookies;
-    if (!cookies.token || cookies.token === 'null') {
-        return res.status(401).send({ message: "No tienes autorización" })
+    const token = req.headers.authorization?.split(' ')[1]
+    console.log({ token })
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' })
     }
     try {
-        const payload = jwt.decode(cookies.token, process.env.SECRET_TOKEN)
-        if (payload.exp <= moment().unix()) {
-            return res.status(401).send({ message: "El token ha expirado" })
+        const decoded = jwt.verify(token, process.env.SECRET_TOKEN)
+        if (decoded.exp <= moment().unix()) {
+            return res.status(401).json({ message: 'Token expired' })
         }
-        req.user = payload.sub
+        req.user = decoded.sub
+        console.log("middleware auth completado")
         next()
-    } catch (err) {
-        return res.status(401).send({ message: "Token inválido" })
+    }
+    catch (error) {
+        return res.status(401).json({ message: 'Invalid token' })
     }
 }
 

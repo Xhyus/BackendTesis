@@ -1,7 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
 const path = require('path');
 require('dotenv').config();
 
@@ -14,7 +13,6 @@ const signedRoutes = require('./routes/signedRoutes');
 const quoteRoutes = require('./routes/quoteRoutes');
 
 const app = express()
-app.use(cookieParser())
 app.use(cors({ credentials: true, origin: process.env.FRONTEND }));
 app.use(express.json())
 app.options('*', cors())
